@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Search Extractor</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 40px auto;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        #query {
+            width: 85%;
+            box-sizing: border-box;
+        }
+        #output {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Google Search Extractor</h2>
+
+    <input id="query" placeholder="Zadejte klíčové slovní spojení">
+    <button onclick="search()">Hledat</button>
+
+    <pre id="output"></pre>
+
+    <script>
+        async function search() {
+            const q = document.getElementById("query").value;
+            const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+            const data = await res.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "results.json";
+            a.click();
+        }
+    </script>
+</body>
+</html>
